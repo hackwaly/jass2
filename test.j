@@ -10,5 +10,9 @@ function sum takes integer from, integer to returns integer
 endfunction
 
 function main takes nothing returns integer
-    return sum(0, 100)
+    if 1 > 0 then
+        return sum(0, 100)
+    else
+        return 0
+    endif
 endfunction

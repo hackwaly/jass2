@@ -169,23 +169,19 @@ and call ctx func_id args =
             done
           with Exitwhen -> ()
         )
-        | Stmt_if (ifthens, else_) -> (
+        | Stmt_if conds -> (
           let rec interp_if = function
-            | [] -> false
+            | [] -> ()
             | (cond, then_) :: rest -> (
               let cond = eval ctx cond in
-              ( match cond with
-                | Val_bool true -> interp then_
-                | Val_bool false -> ()
+              if (
+                match cond with
+                | Val_bool true -> (interp then_; false)
+                | Val_bool false -> true
                 | _ -> assert false
-              );
-              interp_if rest
+              ) then interp_if rest
             )
-          in
-          let interp_else = not (interp_if ifthens) in
-          match else_ with
-          | Some block -> if interp_else then interp block
-          | None -> ()
+          in interp_if conds
         )
         | _ -> assert false
       );

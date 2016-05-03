@@ -193,7 +193,17 @@ _statement:
   | CALL func=ident args=args nl
     { Stmt_call (func, args) }
   | if_=if_ elseif=elseif* else_=else_? ENDIF nl
-    { Stmt_if (if_ :: elseif, else_) }
+    { let conds = if_ :: elseif in
+      Stmt_if (
+        match else_ with
+        | Some else_ -> (
+          let else_loc = $startpos(else_), $endpos(else_) in
+          let else_ = (else_loc, (Exp_literal (Lit_bool true))), else_ in
+          List.append conds (else_ :: [])
+        )
+        | None -> conds
+      )
+    }
   | LOOP nl block=statement* ENDLOOP nl
     { Stmt_loop block }
   | EXITWHEN expr=expr nl

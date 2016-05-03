@@ -37,7 +37,7 @@ and statement = loc * statement_desc
 and statement_desc =
   | Stmt_set of ident * expr option * expr
   | Stmt_call of call_desc
-  | Stmt_if of ifthen_desc list * statement list option
+  | Stmt_if of ifthen_desc list
   | Stmt_loop of statement list
   | Stmt_exitwhen of expr
   | Stmt_return of expr option
